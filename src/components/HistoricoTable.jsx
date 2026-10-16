@@ -443,8 +443,8 @@ export const HistoricoTable = () => {
                             </div>
                           </div>
                         </td>
-                        <td style={{ textAlign: 'right', fontWeight: 600 }}>
-                          <span style={{ color: '#a1acb8', fontSize: '0.75rem', marginRight: '0.25rem' }}>Bs.</span>
+                        <td style={{ textAlign: 'right', fontWeight: 800, color: 'var(--bs-heading-color)' }}>
+                          <span style={{ color: 'var(--bs-primary)', fontSize: '0.8rem', marginRight: '0.25rem' }}>Bs.</span>
                           {formatRate(row.compra, row.moneda)}
                         </td>
                         <td style={{ textAlign: 'right', fontWeight: 800, color: 'var(--bs-heading-color)' }}>

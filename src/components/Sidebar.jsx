@@ -11,12 +11,14 @@ import {
   Building2,
   ExternalLink,
   ShieldCheck,
+  ChevronLeft,
   X
 } from 'lucide-react';
 
 export const Sidebar = ({
   isOpen,
   onClose,
+  onToggleCollapse,
   activeTab,
   onSelectTab,
   ratesCount = 4,
@@ -39,13 +41,21 @@ export const Sidebar = ({
             />
           </a>
 
-          {/* Close button on mobile */}
+          {/* Collapse/Close button: collapses on desktop, closes on mobile */}
           <button
-            className="mobile-toggle-btn"
-            onClick={onClose}
-            aria-label="Cerrar menú"
+            className="sidebar-collapse-btn"
+            onClick={() => {
+              if (window.innerWidth < 992) {
+                onClose();
+              } else if (onToggleCollapse) {
+                onToggleCollapse();
+              }
+            }}
+            title="Ocultar menú lateral"
+            aria-label="Ocultar menú lateral"
           >
-            <X size={20} />
+            <ChevronLeft size={16} className="collapse-icon-desktop" />
+            <X size={16} className="collapse-icon-mobile" />
           </button>
         </div>
 

@@ -13,6 +13,7 @@ import {
 
 export const Navbar = ({ 
   onToggleSidebar, 
+  isSidebarCollapsed,
   loading, 
   onRefresh, 
   onOpenConfig, 
@@ -25,13 +26,14 @@ export const Navbar = ({
   return (
     <nav className="layout-navbar">
       <div className="navbar-left">
-        {/* Mobile Toggle Button */}
+        {/* Sidebar Toggle Button (Desktop & Mobile) */}
         <button 
-          className="mobile-toggle-btn" 
+          className="sidebar-nav-toggle" 
           onClick={onToggleSidebar}
-          aria-label="Abrir menú de navegación"
+          title={isSidebarCollapsed ? "Mostrar barra lateral" : "Ocultar barra lateral"}
+          aria-label="Alternar menú lateral"
         >
-          <Menu size={22} />
+          <Menu size={20} />
         </button>
 
         {/* Search Box */}

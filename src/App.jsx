@@ -12,7 +12,10 @@ import { fetchBCVRates, getStoredApiUrl, saveStoredApiUrl, getStoredRefreshInter
 
 export function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem('sneat_theme') || 'light');
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    return localStorage.getItem('sneat_sidebar_collapsed') === 'true';
+  });
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
   
   const [loading, setLoading] = useState(true);
@@ -25,6 +28,18 @@ export function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [configModalOpen, setConfigModalOpen] = useState(false);
   const [refreshInterval, setRefreshInterval] = useState(getStoredRefreshInterval());
+
+  const handleToggleSidebar = () => {
+    if (window.innerWidth < 992) {
+      setMobileSidebarOpen(prev => !prev);
+    } else {
+      setSidebarCollapsed(prev => {
+        const next = !prev;
+        localStorage.setItem('sneat_sidebar_collapsed', String(next));
+        return next;
+      });
+    }
+  };
 
   // Sync theme attribute to document root
   useEffect(() => {
@@ -80,14 +95,22 @@ export function App() {
     loadRates();
   };
 
-  const ratesList = data?.valores || [];
+  // Custom currency display priority: 1. USD, 2. EUR, 3. COP, 4. RUB
+  const CURRENCY_ORDER = { USD: 1, EUR: 2, COP: 3, RUB: 4 };
+  const rawRatesList = data?.valores || [];
+  const ratesList = [...rawRatesList].sort((a, b) => {
+    const pA = CURRENCY_ORDER[a.moneda?.toUpperCase()] || 99;
+    const pB = CURRENCY_ORDER[b.moneda?.toUpperCase()] || 99;
+    return pA - pB;
+  });
 
   return (
-    <div className="layout-wrapper">
+    <div className={`layout-wrapper ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
       {/* Sneat Sidebar */}
       <Sidebar
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
+        isOpen={mobileSidebarOpen}
+        onClose={() => setMobileSidebarOpen(false)}
+        onToggleCollapse={handleToggleSidebar}
         activeTab={activeTab}
         onSelectTab={setActiveTab}
         ratesCount={ratesList.length}
@@ -99,7 +122,8 @@ export function App() {
       <div className="layout-page">
         {/* Sneat Navbar */}
         <Navbar
-          onToggleSidebar={() => setSidebarOpen(prev => !prev)}
+          onToggleSidebar={handleToggleSidebar}
+          isSidebarCollapsed={sidebarCollapsed}
           loading={loading}
           onRefresh={loadRates}
           onOpenConfig={() => setConfigModalOpen(true)}

@@ -1,25 +1,25 @@
 // API Service to consume http://localhost:3003/apitasasbcv/getValoresBCV and getHistoricoBCV
 
-export const DEFAULT_API_URL = 'http://localhost:3003/apitasasbcv/getValoresBCV';
-export const DEFAULT_HISTORICO_URL = 'http://localhost:3003/apitasasbcv/getHistoricoBCV';
+export const DEFAULT_API_URL = 'https://tasasbcvdev.bdt.com.ve/apitasasbcv/getValoresBCV';
+export const DEFAULT_HISTORICO_URL = 'https://tasasbcvdev.bdt.com.ve/apitasasbcv/getHistoricoBCV';
 
 export const MOCK_BCV_DATA = {
   estatus: "201",
-  mensaje: "⚠️ Ya existen registros para la fecha de operacion 2026-09-18. Se omite la inserción.",
+  mensaje: "⚠️ No se pudo conectar a (https://tasasbcvdev.bdt.com.ve/apitasasbcv/getValoresBCV). Verifique que el servicio Node.js esté corriendo.",
   fechaOperacion: "2026-09-18",
   fechaValor: "2026-09-21",
   valores: [
+    {
+      moneda: "USD",
+      pais: "E.U.A.",
+      compra: "847.44009000",
+      venta: "849.56400000"
+    },
     {
       moneda: "EUR",
       pais: "Zona Euro",
       compra: "971.65785839",
       venta: "974.09309112"
-    },
-    {
-      moneda: "RUB",
-      pais: "Rusia",
-      compra: "10.06407127",
-      venta: "10.08929451"
     },
     {
       moneda: "COP",
@@ -28,10 +28,10 @@ export const MOCK_BCV_DATA = {
       venta: "0.26521524"
     },
     {
-      moneda: "USD",
-      pais: "E.U.A.",
-      compra: "847.44009000",
-      venta: "849.56400000"
+      moneda: "RUB",
+      pais: "Rusia",
+      compra: "10.06407127",
+      venta: "10.08929451"
     }
   ],
   isMock: true

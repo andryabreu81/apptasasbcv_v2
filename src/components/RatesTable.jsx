@@ -32,7 +32,15 @@ export const RatesTable = ({ rates = [], rawData, onSelectForCalc }) => {
     );
   });
 
-  if (sortKey === 'rate-desc') {
+  const CURRENCY_ORDER = { USD: 1, EUR: 2, COP: 3, RUB: 4 };
+
+  if (sortKey === 'none') {
+    filteredRates = [...filteredRates].sort((a, b) => {
+      const pA = CURRENCY_ORDER[a.moneda?.toUpperCase()] || 99;
+      const pB = CURRENCY_ORDER[b.moneda?.toUpperCase()] || 99;
+      return pA - pB;
+    });
+  } else if (sortKey === 'rate-desc') {
     filteredRates = [...filteredRates].sort((a, b) => parseFloat(b.venta) - parseFloat(a.venta));
   } else if (sortKey === 'rate-asc') {
     filteredRates = [...filteredRates].sort((a, b) => parseFloat(a.venta) - parseFloat(b.venta));
@@ -155,8 +163,8 @@ export const RatesTable = ({ rates = [], rawData, onSelectForCalc }) => {
                         </div>
                       </td>
 
-                      <td style={{ textAlign: 'right', fontWeight: 600 }}>
-                        <span style={{ color: '#a1acb8', fontSize: '0.75rem', marginRight: '0.25rem' }}>Bs.</span>
+                      <td style={{ textAlign: 'right', fontWeight: 800, color: 'var(--bs-heading-color)', fontSize: '0.95rem' }}>
+                        <span style={{ color: 'var(--bs-primary)', fontSize: '0.8rem', marginRight: '0.25rem' }}>Bs.</span>
                         {formatRate(item.compra, item.moneda)}
                       </td>
 

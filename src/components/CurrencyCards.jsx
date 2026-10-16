@@ -3,10 +3,24 @@ import { Calculator, ArrowUpRight } from 'lucide-react';
 import { getCurrencyMeta, formatRate, calculateSpread } from '../utils/formatters';
 import { FlagIcon } from './FlagIcon';
 
+// Ordering priority requested: 1. USD, 2. EUR, 3. COP, 4. RUB
+const CURRENCY_ORDER = {
+  USD: 1,
+  EUR: 2,
+  COP: 3,
+  RUB: 4,
+};
+
 export const CurrencyCards = ({ rates = [], onSelectForCalc }) => {
+  const sortedRates = [...rates].sort((a, b) => {
+    const pA = CURRENCY_ORDER[a.moneda?.toUpperCase()] || 99;
+    const pB = CURRENCY_ORDER[b.moneda?.toUpperCase()] || 99;
+    return pA - pB;
+  });
+
   return (
     <div className="kpi-grid">
-      {rates.map((item) => {
+      {sortedRates.map((item) => {
         const meta = getCurrencyMeta(item.moneda);
         const spread = calculateSpread(item.compra, item.venta);
 
@@ -41,34 +55,42 @@ export const CurrencyCards = ({ rates = [], onSelectForCalc }) => {
               </span>
             </div>
 
-            {/* Main Venta Display */}
-            <div className="kpi-rate-display">
-              <span className="kpi-rate-label">Tasa Oficial Venta</span>
-              <div className="kpi-rate-number">
-                <span style={{ fontSize: '1.1rem', color: 'var(--bs-primary)', marginRight: '0.35rem' }}>
-                  Bs.
-                </span>
-                {formatRate(item.venta, item.moneda)}
+            {/* Rates Grid: Compra & Venta side-by-side with equal visual weight */}
+            <div className="kpi-rates-grid">
+              <div className="kpi-rate-box kpi-rate-compra">
+                <span className="kpi-rate-label">Compra</span>
+                <div className="kpi-rate-number" title={`Bs. ${formatRate(item.compra, item.moneda)}`}>
+                  <span className="kpi-rate-currency">Bs.</span>
+                  <span className="kpi-rate-amount">{formatRate(item.compra, item.moneda)}</span>
+                </div>
+              </div>
+
+              <div className="kpi-rate-box kpi-rate-venta">
+                <span className="kpi-rate-label">Venta</span>
+                <div className="kpi-rate-number" title={`Bs. ${formatRate(item.venta, item.moneda)}`}>
+                  <span className="kpi-rate-currency">Bs.</span>
+                  <span className="kpi-rate-amount">{formatRate(item.venta, item.moneda)}</span>
+                </div>
               </div>
             </div>
 
-            {/* Footer with Compra & Spread Diff */}
+            {/* Footer with Spread Diff & Margen */}
             <div className="kpi-footer-row">
               <div>
-                <span style={{ fontSize: '0.7rem', color: '#a1acb8', display: 'block', fontWeight: 700 }}>
-                  COMPRA
-                </span>
-                <span className="kpi-compra-val">
-                  Bs. {formatRate(item.compra, item.moneda)}
-                </span>
-              </div>
-
-              <div style={{ textAlign: 'right' }}>
                 <span style={{ fontSize: '0.7rem', color: '#a1acb8', display: 'block', fontWeight: 700 }}>
                   DIFERENCIAL
                 </span>
                 <span style={{ fontWeight: 700, color: 'var(--bs-warning-dark)' }}>
                   Bs. {spread.diffFormatted}
+                </span>
+              </div>
+
+              <div style={{ textAlign: 'right' }}>
+                <span style={{ fontSize: '0.7rem', color: '#a1acb8', display: 'block', fontWeight: 700 }}>
+                  MARGEN (SPREAD)
+                </span>
+                <span style={{ fontWeight: 700, color: 'var(--bs-primary)' }}>
+                  {spread.formatted}
                 </span>
               </div>
             </div>
